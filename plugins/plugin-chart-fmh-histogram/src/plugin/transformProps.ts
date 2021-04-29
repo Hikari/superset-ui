@@ -26,7 +26,7 @@ export default function transformProps(chartProps: ChartProps) {
    *
    * The transformProps function is also quite useful to return
    * additional/modified props to your data viz component. The formData
-   * can also be accessed from your FmhPie.tsx file, but
+   * can also be accessed from your FmhHistogram.tsx file, but
    * doing supplying custom props here is often handy for integrating third
    * party libraries that rely on specific props.
    *
@@ -49,37 +49,23 @@ export default function transformProps(chartProps: ChartProps) {
    * be seen until restarting the development server.
    */
   const { width, height, formData, queriesData } = chartProps;
-  const { headerText, sortValue, labelPostfix } = formData;
+  const { headerText } = formData;
   const { data } = queriesData[0];
-  console.log(data);
-  // const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
-  // const metricLabel = getMetricLabel(metric);
-
-  let seriesData = data.map((item: any) => ({
-    name: item[queriesData[0].colnames[0]],
-    value: item[queriesData[0].colnames[1]],
-  }));
-
-  if (labelPostfix) {
-    seriesData = seriesData.map((item: any) => ({
-      name: item.name + labelPostfix,
-      value: item.value,
-    }));
-  }
-
-  if (!sortValue) {
-    seriesData = seriesData.sort(function (a: { value: number }, b: { value: number }) {
-      return a.value - b.value;
-    });
-  }
+  const xAxisData = data.map((item: any) => item[queriesData[0].colnames[0]]);
 
   const option = {
     tooltip: {},
     legend: {},
-    series: {
-      type: 'pie',
-      data: seriesData,
+    xAxis: {
+      data: xAxisData,
     },
+    yAxis: {},
+    series: [
+      {
+        type: 'bar',
+        data: data.map((item: any) => item[queriesData[0].colnames[1]]),
+      },
+    ],
   };
 
   return {
