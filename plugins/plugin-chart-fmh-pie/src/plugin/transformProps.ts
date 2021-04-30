@@ -51,9 +51,6 @@ export default function transformProps(chartProps: ChartProps) {
   const { width, height, formData, queriesData } = chartProps;
   const { headerText, sortValue, labelPostfix } = formData;
   const { data } = queriesData[0];
-  console.log(data);
-  // const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
-  // const metricLabel = getMetricLabel(metric);
 
   let seriesData = data.map((item: any) => ({
     name: item[queriesData[0].colnames[0]],

@@ -49,23 +49,56 @@ export default function transformProps(chartProps: ChartProps) {
    * be seen until restarting the development server.
    */
   const { width, height, formData, queriesData } = chartProps;
-  const { headerText } = formData;
+  const { headerText, sortValue, labelPostfix } = formData;
   const { data } = queriesData[0];
-  const xAxisData = data.map((item: any) => item[queriesData[0].colnames[0]]);
+  const xAxisData = data.map((item: any) => item[queriesData[0]?.colnames[0]]) || [];
+
+  let seriesData = data.map((item: any) => ({
+    name: item[queriesData[0].colnames[0]],
+    value: item[queriesData[0].colnames[1]],
+  }));
+
+  if (labelPostfix) {
+    seriesData = seriesData.map((item: any) => ({
+      name: item.name + labelPostfix,
+      value: item.value,
+    }));
+  }
+
+  if (!sortValue) {
+    seriesData.sort((a: { value: number }, b: { value: number }) => a.value - b.value);
+    xAxisData.sort((a: number, b: number) => a - b);
+  }
 
   const option = {
-    tooltip: {},
-    legend: {},
+    tooltip: {
+      trigger: 'item',
+      formatter(value: any) {
+        return labelPostfix
+          ? `${value.seriesName}: <br/>${value.data.value}${labelPostfix} %`
+          : `${value.seriesName}: <br/>${value.data.value} %`;
+      },
+    },
+    legend: {
+      data: [queriesData[0].colnames[0]] || [],
+    },
     xAxis: {
       data: xAxisData,
     },
-    yAxis: {},
-    series: [
-      {
-        type: 'bar',
-        data: data.map((item: any) => item[queriesData[0].colnames[1]]),
+    yAxis: {
+      type: 'value',
+      name: '%',
+      axisLabel: {
+        formatter(value: any) {
+          return labelPostfix ? `${value}${labelPostfix}%` : `${value} %`;
+        },
       },
-    ],
+    },
+    series: {
+      name: queriesData[0].colnames[0] || '',
+      type: 'bar',
+      data: seriesData,
+    },
   };
 
   return {

@@ -137,26 +137,25 @@ const config: ControlPanelConfig = {
       controlSetRows: [
         [
           {
-            name: 'header_text',
+            name: 'sort_value',
             config: {
-              type: 'TextControl',
-              default: 'Hello, World!',
+              type: 'CheckboxControl',
+              default: false,
               renderTrigger: true,
               // ^ this makes it apply instantaneously, without triggering a "run query" button
-              label: t('Header Text'),
-              description: t('The text you want to see in the header'),
+              label: t('Sort by label'),
+              description: t('Sort by label'),
             },
           },
         ],
         [
           {
-            name: 'bold_text',
+            name: 'label_postfix',
             config: {
-              type: 'CheckboxControl',
-              label: t('Bold Text'),
+              type: 'TextControl',
+              label: t('Label Postfix'),
               renderTrigger: true,
-              default: true,
-              description: t('A checkbox to make the '),
+              placeholder: 'Adds a postfix to the labels.',
             },
           },
         ],
@@ -168,7 +167,6 @@ const config: ControlPanelConfig = {
               label: t('Font Size'),
               default: 'xl',
               choices: [
-                // [value, label]
                 ['xxs', 'xx-small'],
                 ['xs', 'x-small'],
                 ['s', 'small'],
